@@ -61,6 +61,7 @@
 ## 展示材料
 
 - 中期展示脚本：`docs/midterm-demo-script.html`
+- 本地开发与交付证据说明：`docs/local-development-evidence.md`
 
 ## 目录说明
 
