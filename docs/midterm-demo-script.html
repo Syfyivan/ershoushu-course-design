@@ -1,0 +1,851 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>校园二手书交易平台 - 中期展示录屏脚本</title>
+  <style>
+    :root {
+      --paper: #fbfaf7;
+      --surface: #ffffff;
+      --ink: #202124;
+      --muted: #5f6368;
+      --line: #d8ded8;
+      --nav: #183b56;
+      --blue: #2467a5;
+      --green: #2f6f5e;
+      --gold: #9a6a20;
+      --red: #a33b36;
+      --soft-blue: #eaf3fb;
+      --soft-green: #e9f4ef;
+      --soft-gold: #f7f0e4;
+      --shadow: 0 10px 30px rgba(24, 59, 86, 0.10);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+      line-height: 1.72;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    code {
+      padding: 0.12rem 0.35rem;
+      border: 1px solid #dfe4ea;
+      border-radius: 5px;
+      background: #f6f8fa;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.92em;
+      word-break: break-all;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 28px 22px;
+      overflow: auto;
+      color: #f7fbff;
+      background: var(--nav);
+    }
+
+    .brand {
+      display: grid;
+      gap: 8px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .brand small {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 12px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 23px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .meta-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 2px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 999px;
+      color: #f7fbff;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .nav-title {
+      margin: 22px 0 10px;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .nav-list {
+      display: grid;
+      gap: 5px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .nav-list a {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      align-items: center;
+      min-height: 38px;
+      padding: 5px 8px;
+      border-radius: 7px;
+      color: rgba(255, 255, 255, 0.83);
+      font-size: 14px;
+    }
+
+    .nav-list a:hover,
+    .nav-list a:focus {
+      background: rgba(255, 255, 255, 0.10);
+      outline: none;
+    }
+
+    .nav-index {
+      display: inline-grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .sidebar-note {
+      margin-top: 22px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 13px;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 38px clamp(20px, 4vw, 58px) 56px;
+    }
+
+    .hero {
+      max-width: 1160px;
+      margin: 0 auto 26px;
+      padding: 30px 32px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .hero h2 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      max-width: 850px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      max-width: 1160px;
+      margin: 0 auto 28px;
+    }
+
+    .status {
+      min-height: 90px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+
+    .status strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--nav);
+      font-size: 18px;
+    }
+
+    .status span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      max-width: 1160px;
+      margin: 0 auto 18px;
+      padding: 10px 0;
+      background: linear-gradient(var(--paper), rgba(251, 250, 247, 0.92));
+    }
+
+    button,
+    .link-button {
+      min-height: 36px;
+      padding: 7px 12px;
+      border: 1px solid #cdd6dd;
+      border-radius: 7px;
+      color: var(--nav);
+      background: #fff;
+      font: inherit;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button:hover,
+    .link-button:hover {
+      border-color: #9db1bf;
+      background: #f7fbff;
+    }
+
+    .content {
+      display: grid;
+      gap: 18px;
+      max-width: 1160px;
+      margin: 0 auto;
+    }
+
+    .section-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: 0 6px 20px rgba(24, 59, 86, 0.06);
+      overflow: hidden;
+      scroll-margin-top: 74px;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      background: #f8fbfd;
+    }
+
+    .section-number {
+      display: inline-grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--blue);
+      font-weight: 800;
+    }
+
+    .section-head h3 {
+      margin: 0;
+      color: var(--nav);
+      font-size: 22px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .time {
+      padding: 4px 10px;
+      border-radius: 999px;
+      color: var(--green);
+      background: var(--soft-green);
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .section-body {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.6fr);
+      gap: 0;
+    }
+
+    .screen-panel,
+    .script-panel {
+      padding: 20px;
+    }
+
+    .screen-panel {
+      border-right: 1px solid var(--line);
+      background: #fcfdfc;
+    }
+
+    .label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .screen-panel p,
+    .script-panel p {
+      margin: 0 0 12px;
+    }
+
+    .script-text {
+      margin: 0;
+      color: #1f2328;
+      font-size: 16px;
+    }
+
+    .quote {
+      padding-left: 14px;
+      border-left: 4px solid var(--blue);
+    }
+
+    .steps {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .steps li {
+      margin: 5px 0;
+    }
+
+    .hint {
+      margin-top: 14px;
+      padding: 12px;
+      border: 1px solid #ead8b7;
+      border-radius: var(--radius);
+      background: var(--soft-gold);
+      color: #5d4218;
+      font-size: 14px;
+    }
+
+    .copy-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+    }
+
+    .qa-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .qa-card {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+
+    .qa-card h4 {
+      margin: 0 0 8px;
+      color: var(--nav);
+      font-size: 16px;
+    }
+
+    .qa-card p {
+      margin: 0;
+      color: #33383d;
+      font-size: 14px;
+    }
+
+    .prepare-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .prepare-item {
+      padding: 11px 12px;
+      border: 1px solid #dfe5ea;
+      border-radius: 7px;
+      background: #fff;
+      color: #30363d;
+      font-size: 14px;
+      word-break: break-word;
+    }
+
+    .accent-blue { background: var(--soft-blue); }
+    .accent-green { background: var(--soft-green); }
+    .accent-gold { background: var(--soft-gold); }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+      }
+
+      .nav-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .status-grid,
+      .qa-grid,
+      .prepare-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-body {
+        grid-template-columns: 1fr;
+      }
+
+      .screen-panel {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .main {
+        padding: 20px 14px 36px;
+      }
+
+      .hero {
+        padding: 22px 18px;
+      }
+
+      .section-head {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+
+      .time {
+        grid-column: 2;
+        justify-self: start;
+      }
+
+      .nav-list {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        justify-content: flex-start;
+        overflow-x: auto;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .layout {
+        display: block;
+      }
+
+      .sidebar,
+      .toolbar,
+      button {
+        display: none !important;
+      }
+
+      .main {
+        padding: 0;
+      }
+
+      .hero,
+      .section-card,
+      .status {
+        box-shadow: none;
+      }
+
+      .section-card {
+        break-inside: avoid;
+        margin-bottom: 14px;
+      }
+
+      .section-head,
+      .screen-panel {
+        background: #fff;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <small>Midterm Demo Script</small>
+        <h1>校园二手书交易平台</h1>
+        <div class="meta-pills">
+          <span class="pill">5-7 分钟</span>
+          <span class="pill">中期检查</span>
+          <span class="pill">边录边看</span>
+        </div>
+      </div>
+
+      <div class="nav-title">录屏流程</div>
+      <ul class="nav-list">
+        <li><a href="#prep"><span class="nav-index">0</span><span>录屏前准备</span></a></li>
+        <li><a href="#open"><span class="nav-index">1</span><span>开场介绍</span></a></li>
+        <li><a href="#progress"><span class="nav-index">2</span><span>进度总览</span></a></li>
+        <li><a href="#database"><span class="nav-index">3</span><span>数据库设计</span></a></li>
+        <li><a href="#backend"><span class="nav-index">4</span><span>后端鉴权</span></a></li>
+        <li><a href="#book"><span class="nav-index">5</span><span>图书模块</span></a></li>
+        <li><a href="#front"><span class="nav-index">6</span><span>前台流程</span></a></li>
+        <li><a href="#order"><span class="nav-index">7</span><span>订单计划</span></a></li>
+        <li><a href="#close"><span class="nav-index">8</span><span>收尾总结</span></a></li>
+        <li><a href="#qa"><span class="nav-index">Q</span><span>常见追问</span></a></li>
+      </ul>
+
+      <div class="sidebar-note">
+        讲的时候保持中期口径：核心架构和核心模块已经完成，交易闭环正在联调完善。
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="hero">
+        <h2>中期展示录屏脚本</h2>
+        <p>这页用于录屏时放在旁边看。左侧按展示顺序跳转，右侧每段都有“画面”和“讲稿”。建议不要背得太死，按每段核心意思自然讲即可。</p>
+      </section>
+
+      <section class="status-grid" aria-label="展示节奏">
+        <div class="status accent-blue"><strong>主题</strong><span>校园二手书交易平台</span></div>
+        <div class="status accent-green"><strong>口径</strong><span>核心完成，订单联调中</span></div>
+        <div class="status accent-gold"><strong>重点</strong><span>数据库、鉴权、图书模块</span></div>
+        <div class="status"><strong>收尾</strong><span>下一阶段计划要讲清楚</span></div>
+      </section>
+
+      <div class="toolbar">
+        <button type="button" data-action="expand">展开全部</button>
+        <button type="button" data-action="collapse">收起讲稿</button>
+        <button type="button" onclick="window.print()">打印</button>
+      </div>
+
+      <div class="content">
+        <section class="section-card" id="prep">
+          <div class="section-head">
+            <span class="section-number">0</span>
+            <h3>录屏前准备</h3>
+            <span class="time">3 分钟检查</span>
+          </div>
+          <div class="section-body">
+            <div class="screen-panel">
+              <p class="label">提前打开</p>
+              <div class="prepare-grid">
+                <div class="prepare-item">项目目录：<code>解压后的 ershoushujiaoyipingtai/</code></div>
+                <div class="prepare-item">数据库脚本：<code>ershoushujiaoyipingtai/db.sql</code></div>
+                <div class="prepare-item">后端代码：<code>UsersController.java</code>、<code>TushuController.java</code>、<code>TushuOrderController.java</code></div>
+                <div class="prepare-item">前台：<code>http://localhost:8080/ershoushujiaoyipingtai/front/index.html</code></div>
+                <div class="prepare-item">后台：<code>http://localhost:8080/ershoushujiaoyipingtai/admin/dist/index.html</code></div>
+                <div class="prepare-item">账号：管理员 <code>admin/admin</code>，用户 <code>a1/123456</code></div>
+              </div>
+            </div>
+            <div class="script-panel">
+              <p class="label">提醒</p>
+              <p>录屏前先确认后端已启动、数据库已导入、浏览器页面能打开。不要临时现场导包或调数据库，录屏时只展示已经稳定的内容。</p>
+              <div class="hint">如果购物车或订单现场还没完全跑通，就按“接口和页面基础已完成，下一阶段联调交易闭环”来讲。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card" id="open">
+          <div class="section-head">
+            <span class="section-number">1</span>
+            <h3>开场介绍</h3>
+            <span class="time">约 40 秒</span>
+          </div>
+          <div class="section-body">
+            <div class="screen-panel">
+              <p class="label">画面</p>
+              <p>展示解压后的项目根目录。</p>
+            </div>
+            <div class="script-panel">
+              <div class="copy-row"><button type="button" data-copy="#script-open">复制讲稿</button></div>
+              <div class="quote script-text" id="script-open">老师好，我本次课程设计的题目是校园二手书交易平台。这个项目主要解决校园内教材和二手资料流通效率低的问题。传统方式依赖微信群、贴吧或者线下摆摊，信息比较分散，也缺少订单记录和统一管理。所以我设计了一个基于 Spring Boot、MyBatis-Plus、MySQL 和 Vue 的 B/S 架构系统。
+
+这次是中期检查，我主要展示当前已经完成的需求分析、数据库设计、后端接口、前后台页面和核心模块联调情况。最终交易闭环和测试截图会在下一阶段继续完善。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card" id="progress">
+          <div class="section-head">
+            <span class="section-number">2</span>
+            <h3>进度总览</h3>
+            <span class="time">约 50 秒</span>
+          </div>
+          <div class="section-body">
+            <div class="screen-panel">
+              <p class="label">画面</p>
+              <p>回到脚本页面顶部的“口径”和“重点”卡片。</p>
+            </div>
+            <div class="script-panel">
+              <div class="copy-row"><button type="button" data-copy="#script-progress">复制讲稿</button></div>
+              <div class="quote script-text" id="script-progress">目前项目已经完成了几个部分：第一是需求分析，系统分为游客、注册用户和管理员三类角色；第二是数据库设计，目前有 13 张表，覆盖用户、图书、购物车、订单、留言、求购、公告、字典和配置；第三是后端已经按照 Controller、Service、Dao、Entity 分层完成主体代码；第四是前台用户页面和后台管理页面已经整理完成。
+
+目前重点可展示的是登录鉴权、图书浏览与管理、公告、留言和求购等模块。购物车和订单模块已经有接口和页面，下一阶段主要做完整交易流程的联调、异常校验和测试材料整理。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card" id="database">
+          <div class="section-head">
+            <span class="section-number">3</span>
+            <h3>数据库设计</h3>
+            <span class="time">约 60 秒</span>
+          </div>
+          <div class="section-body">
+            <div class="screen-panel">
+              <p class="label">画面</p>
+              <p>打开 <code>ershoushujiaoyipingtai/db.sql</code>，定位 <code>CREATE TABLE</code> 列表。</p>
+            </div>
+            <div class="script-panel">
+              <div class="copy-row"><button type="button" data-copy="#script-database">复制讲稿</button></div>
+              <div class="quote script-text" id="script-database">这是数据库初始化脚本，数据库名是 ershoushujiaoyipingtai。当前一共设计了 13 张表。这里的 users 是管理员账号表，yonghu 是普通用户表，token 用于保存登录令牌。
+
+业务核心是 tushu 图书表，它保存图书名称、作者、出版社、类型、库存、价格、图片、上下架状态和逻辑删除状态。交易相关表包括 cart 购物车表、tushu_order 订单表和 address 收货地址表。互动相关表包括 tushu_liuyan 图书留言、tushuqiugou 图书求购、chat 用户反馈和 news 公告。
+
+这部分体现的是数据库课程设计里的实体完整性和参照关系设计，后端接口会围绕这些表完成增删改查和业务状态流转。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card" id="backend">
+          <div class="section-head">
+            <span class="section-number">4</span>
+            <h3>后端架构和登录鉴权</h3>
+            <span class="time">约 70 秒</span>
+          </div>
+          <div class="section-body">
+            <div class="screen-panel">
+              <p class="label">画面</p>
+              <p>打开 <code>UsersController.java</code> 和 <code>AuthorizationInterceptor.java</code>。</p>
+            </div>
+            <div class="script-panel">
+              <div class="copy-row"><button type="button" data-copy="#script-backend">复制讲稿</button></div>
+              <div class="quote script-text" id="script-backend">后端采用 Spring Boot，包结构按分层组织。controller 负责接口入口，service 负责业务服务，dao 负责数据库访问，entity 对应数据库表，utils 里放统一返回对象、分页和通用工具。
+
+这里以登录为例，UsersController 的 /users/login 接口会根据用户名查询用户，校验密码后调用 TokenService.generateToken 生成 token，并把 token、角色和用户 id 返回给前端。后续请求会通过拦截器校验 token。标注了 @IgnoreAuth 的登录、注册接口可以匿名访问，其他接口需要登录后才能访问。
+
+这一部分是中期阶段已经完成的系统入口能力，也是后续所有业务模块的权限基础。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card" id="book">
+          <div class="section-head">
+            <span class="section-number">5</span>
+            <h3>图书核心模块</h3>
+            <span class="time">约 90 秒</span>
+          </div>
+          <div class="section-body">
+            <div class="screen-panel">
+              <p class="label">画面</p>
+              <p>打开 <code>TushuController.java</code>，再切到后台图书管理页面。</p>
+              <p class="label">操作建议</p>
+              <ol class="steps">
+                <li>在后台登录 <code>admin/admin</code>。</li>
+                <li>打开“图书信息管理”。</li>
+                <li>展示列表、搜索、新增或编辑弹窗。</li>
+                <li>如果数据库已导入，可展示一条示例图书详情。</li>
+              </ol>
+            </div>
+            <div class="script-panel">
+              <div class="copy-row"><button type="button" data-copy="#script-book">复制讲稿</button></div>
+              <div class="quote script-text" id="script-book">图书模块是本系统的核心模块。后端对应 TushuController，已经实现了分页查询、详情查询、保存、修改、逻辑删除、批量导入和前台列表接口。
+
+在分页查询中，系统会根据当前角色判断查询范围。如果是普通用户，只查看自己发布或相关的数据；管理员可以查看全部数据。图书删除这里没有直接物理删除，而是把 tushu_delete 逻辑删除字段改为删除状态，这样可以避免误删数据，也方便后续恢复或审计。
+
+页面上可以看到后台有图书信息管理模块，管理员可以查看、添加、修改和删除图书。前台用户也可以在图书列表里浏览图书详情，这是后续购物车和订单流程的入口。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card" id="front">
+          <div class="section-head">
+            <span class="section-number">6</span>
+            <h3>前台用户流程</h3>
+            <span class="time">约 70 秒</span>
+          </div>
+          <div class="section-body">
+            <div class="screen-panel">
+              <p class="label">画面</p>
+              <p>切到前台首页和登录页。</p>
+              <p class="label">操作建议</p>
+              <ol class="steps">
+                <li>打开前台首页。</li>
+                <li>展示图书列表和图书详情。</li>
+                <li>登录 <code>a1/123456</code>。</li>
+                <li>展示个人中心、购物车或订单入口。</li>
+              </ol>
+            </div>
+            <div class="script-panel">
+              <div class="copy-row"><button type="button" data-copy="#script-front">复制讲稿</button></div>
+              <div class="quote script-text" id="script-front">前台主要面向普通学生用户。用户可以在未登录状态下浏览首页、公告和图书列表；需要进行发布、留言、加入购物车、下单等操作时再登录。
+
+这里使用演示账号 a1，密码是 123456。登录后，用户可以进入个人中心，维护个人资料，也可以查看自己相关的图书、购物车、订单和地址信息。中期阶段前台页面和接口已经基本对齐，后续会重点补充异常提示、库存不足提示和订单状态流转的细节。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card" id="order">
+          <div class="section-head">
+            <span class="section-number">7</span>
+            <h3>订单和后续计划</h3>
+            <span class="time">约 60 秒</span>
+          </div>
+          <div class="section-body">
+            <div class="screen-panel">
+              <p class="label">画面</p>
+              <p>打开 <code>TushuOrderController.java</code> 的 <code>/order</code>、<code>/deliver</code>、<code>/receiving</code> 附近。</p>
+            </div>
+            <div class="script-panel">
+              <div class="copy-row"><button type="button" data-copy="#script-order">复制讲稿</button></div>
+              <div class="quote script-text" id="script-order">交易闭环当前已经具备接口基础。订单模块对应 TushuOrderController，包括订单列表、详情、创建订单、退款、管理员发货和用户收货等接口。这个模块是下一阶段联调重点，因为它涉及购物车、图书库存、用户余额、地址和订单状态多个表之间的协同。
+
+后续我会重点完成三件事：第一，把购物车到下单、库存扣减和订单状态流转完整跑通；第二，补充多组测试用例，包括登录失败、重复注册、库存不足、订单发货和收货；第三，把运行截图、核心代码解释和 AI 辅助开发记录整理进最终报告。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card" id="close">
+          <div class="section-head">
+            <span class="section-number">8</span>
+            <h3>收尾总结</h3>
+            <span class="time">约 40 秒</span>
+          </div>
+          <div class="section-body">
+            <div class="screen-panel">
+              <p class="label">画面</p>
+              <p>回到脚本页面顶部或项目目录。</p>
+            </div>
+            <div class="script-panel">
+              <div class="copy-row"><button type="button" data-copy="#script-close">复制讲稿</button></div>
+              <div class="quote script-text" id="script-close">总结一下，中期阶段项目已经完成需求分析、数据库建模、后端分层架构、核心实体和接口开发，并完成前后台主要页面整理。项目已经可以通过 Maven 打包，说明后端工程结构是完整的。当前可展示登录鉴权、图书管理、图书浏览、公告、留言和求购等基础功能。下一阶段我会围绕交易闭环、测试验证和最终报告进行完善。以上就是本次中期交付展示。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card" id="qa">
+          <div class="section-head">
+            <span class="section-number">Q</span>
+            <h3>常见追问回答</h3>
+            <span class="time">答辩备用</span>
+          </div>
+          <div class="screen-panel">
+            <div class="qa-grid">
+              <article class="qa-card">
+                <h4>为什么选二手书交易？</h4>
+                <p>校园内每学期都有大量闲置教材，二手书交易是真实需求，能体现用户、商品、订单、留言、公告、地址等数据库对象之间的关系，适合作为数据库和 Web 综合课程设计。</p>
+              </article>
+              <article class="qa-card">
+                <h4>数据库有哪些完整性设计？</h4>
+                <p>所有表都有主键 id；用户登录名做唯一性检查；订单表关联用户、图书、地址；图书用库存、价格、上下架和逻辑删除字段保证业务状态；token 表记录用户、角色和过期时间。</p>
+              </article>
+              <article class="qa-card">
+                <h4>中期最核心的成果是什么？</h4>
+                <p>不是最终界面，而是需求、数据库、架构和核心接口已经落地，并且 Maven 构建通过。后续主要是业务流程联调和测试材料完善。</p>
+              </article>
+              <article class="qa-card">
+                <h4>你自己负责哪部分？</h4>
+                <p>按实际分工替换。建议说：我主要负责需求整理、后端框架搭建、登录鉴权、图书信息管理、数据库脚本整理和中期交付文档；订单和测试部分会和组员继续联调。</p>
+              </article>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const copyButtons = document.querySelectorAll('[data-copy]');
+    const cards = document.querySelectorAll('.section-card');
+
+    function copyText(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text);
+      }
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.style.position = 'fixed';
+      area.style.left = '-9999px';
+      document.body.appendChild(area);
+      area.focus();
+      area.select();
+      document.execCommand('copy');
+      area.remove();
+      return Promise.resolve();
+    }
+
+    copyButtons.forEach((button) => {
+      button.addEventListener('click', async () => {
+        const target = document.querySelector(button.dataset.copy);
+        if (!target) return;
+        const original = button.textContent;
+        await copyText(target.textContent.trim());
+        button.textContent = '已复制';
+        setTimeout(() => {
+          button.textContent = original;
+        }, 1200);
+      });
+    });
+
+    document.querySelector('[data-action="collapse"]').addEventListener('click', () => {
+      cards.forEach((card) => {
+        if (card.id !== 'prep' && card.id !== 'qa') {
+          const body = card.querySelector('.section-body');
+          if (body) body.style.display = 'none';
+        }
+      });
+    });
+
+    document.querySelector('[data-action="expand"]').addEventListener('click', () => {
+      cards.forEach((card) => {
+        const body = card.querySelector('.section-body');
+        if (body) body.style.display = '';
+      });
+    });
+  </script>
+</body>
+</html>
