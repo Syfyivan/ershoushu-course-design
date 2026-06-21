@@ -335,35 +335,8 @@ private CartService cartService;
     @RequestMapping("/add")
     public R add(@RequestBody TushuOrderEntity tushuOrder, HttpServletRequest request){
         logger.debug("add方法:,,Controller:{},,tushuOrder:{}",this.getClass().getName(),tushuOrder.toString());
-            TushuEntity tushuEntity = tushuService.selectById(tushuOrder.getTushuId());
-            if(tushuEntity == null){
-                return R.error(511,"查不到该图书");
-            }
-            // Double tushuNewMoney = tushuEntity.getTushuNewMoney();
-
-            if(false){
-            }
-            else if((tushuEntity.getTushuKucunNumber() -tushuOrder.getBuyNumber())<0){
-                return R.error(511,"购买数量不能大于库存数量");
-            }
-            else if(tushuEntity.getTushuNewMoney() == null){
-                return R.error(511,"图书价格不能为空");
-            }
-
-            //计算所获得积分
-            Double buyJifen =0.0;
-            Integer userId = (Integer) request.getSession().getAttribute("userId");
-            tushuOrder.setTushuOrderTypes(3); //设置订单状态为已支付
-            tushuOrder.setTushuOrderTruePrice(0.0); //设置实付价格
-            tushuOrder.setYonghuId(userId); //设置订单支付人id
-            tushuOrder.setTushuOrderUuidNumber(String.valueOf(new Date().getTime()));
-            tushuOrder.setTushuOrderPaymentTypes(1);
-            tushuOrder.setInsertTime(new Date());
-            tushuOrder.setCreateTime(new Date());
-                tushuEntity.setTushuKucunNumber( tushuEntity.getTushuKucunNumber() -tushuOrder.getBuyNumber());
-                tushuService.updateById(tushuEntity);
-                tushuOrderService.insert(tushuOrder);//新增订单
-            return R.ok();
+        // TODO 第二阶段联调：直接下单（库存校验、库存扣减、订单落库）逻辑尚未接通，中期暂返回占位提示
+        return R.error("下单功能正在开发中，预计第二阶段联调完成");
     }
     /**
      * 添加订单
@@ -371,102 +344,8 @@ private CartService cartService;
     @RequestMapping("/order")
     public R add(@RequestParam Map<String, Object> params, HttpServletRequest request){
         logger.debug("order方法:,,Controller:{},,params:{}",this.getClass().getName(),params.toString());
-        String tushuOrderUuidNumber = String.valueOf(new Date().getTime());
-
-        //获取当前登录用户的id
-        Integer userId = (Integer) request.getSession().getAttribute("userId");
-        Integer addressId = Integer.valueOf(String.valueOf(params.get("addressId")));
-
-        Integer tushuOrderPaymentTypes = Integer.valueOf(String.valueOf(params.get("tushuOrderPaymentTypes")));//支付类型
-
-        String data = String.valueOf(params.get("tushus"));
-        JSONArray jsonArray = JSON.parseArray(data);
-        List<Map> tushus = JSON.parseObject(jsonArray.toString(), List.class);
-
-        //获取当前登录用户的个人信息
-        YonghuEntity yonghuEntity = yonghuService.selectById(userId);
-
-        //当前订单表
-        List<YonghuEntity> yonghuList = new ArrayList<>();
-        //当前订单表
-        List<TushuOrderEntity> tushuOrderList = new ArrayList<>();
-        //商品表
-        List<TushuEntity> tushuList = new ArrayList<>();
-        //购物车ids
-        List<Integer> cartIds = new ArrayList<>();
-
-        BigDecimal zhekou = new BigDecimal(1.0);
-
-        //循环取出需要的数据
-        for (Map<String, Object> map : tushus) {
-           //取值
-            Integer tushuId = Integer.valueOf(String.valueOf(map.get("tushuId")));//商品id
-            Integer buyNumber = Integer.valueOf(String.valueOf(map.get("buyNumber")));//购买数量
-            TushuEntity tushuEntity = tushuService.selectById(tushuId);//购买的商品
-            YonghuEntity yonghuEntity1 = yonghuService.selectById(tushuEntity.getYonghuId());//发布商品的用户
-            String id = String.valueOf(map.get("id"));
-            if(StringUtil.isNotEmpty(id))
-                cartIds.add(Integer.valueOf(id));
-
-            if(yonghuEntity.getId() == tushuEntity.getYonghuId()){
-                return R.error("购买的商品中有自己发布的商品（不可购买自己发布的商品）");
-            }
-
-
-            //判断商品的库存是否足够
-            if(tushuEntity.getTushuKucunNumber() < buyNumber){
-                //商品库存不足直接返回
-                return R.error(tushuEntity.getTushuName()+"的库存不足");
-            }else{
-                //商品库存充足就减库存
-                tushuEntity.setTushuKucunNumber(tushuEntity.getTushuKucunNumber() - buyNumber);
-            }
-
-            //订单信息表增加数据
-            TushuOrderEntity tushuOrderEntity = new TushuOrderEntity<>();
-
-            //用户信息
-            YonghuEntity objectYonghuEntity = new YonghuEntity();
-
-            //赋值订单信息
-            tushuOrderEntity.setTushuOrderUuidNumber(tushuOrderUuidNumber);//订单号
-            tushuOrderEntity.setAddressId(addressId);//送货地址
-            tushuOrderEntity.setTushuId(tushuId);//图书
-            tushuOrderEntity.setYonghuId(userId);//用户
-            tushuOrderEntity.setBuyNumber(buyNumber);//购买数量 ？？？？？？
-            tushuOrderEntity.setTushuOrderTypes(3);//订单类型
-            tushuOrderEntity.setTushuOrderPaymentTypes(tushuOrderPaymentTypes);//支付类型
-            tushuOrderEntity.setInsertTime(new Date());//订单创建时间
-            tushuOrderEntity.setCreateTime(new Date());//创建时间
-
-            //判断是什么支付方式 1代表余额 2代表积分
-            if(tushuOrderPaymentTypes == 1){//余额支付
-                //计算金额
-                Double money = new BigDecimal(tushuEntity.getTushuNewMoney()).multiply(new BigDecimal(buyNumber)).multiply(zhekou).doubleValue();
-
-                if(yonghuEntity.getNewMoney() - money <0 ){
-                    return R.error("余额不足,请充值！！！");
-                }
-                tushuOrderEntity.setTushuOrderTruePrice(money);
-
-                yonghuEntity.setNewMoney(yonghuEntity.getNewMoney()-money);
-
-                objectYonghuEntity.setNewMoney(yonghuEntity1.getNewMoney()+money);
-                objectYonghuEntity.setId(yonghuEntity1.getId());
-
-            }
-            yonghuList.add(objectYonghuEntity);
-            tushuOrderList.add(tushuOrderEntity);
-            tushuList.add(tushuEntity);
-
-        }
-        tushuOrderService.insertBatch(tushuOrderList);
-        tushuService.updateBatchById(tushuList);
-        yonghuService.updateBatchById(yonghuList);
-        yonghuService.updateById(yonghuEntity);
-        if(cartIds != null && cartIds.size()>0)
-            cartService.deleteBatchIds(cartIds);
-        return R.ok();
+        // TODO 第二阶段联调：购物车结算下单（多商品库存扣减、余额支付、批量生成订单、清空购物车）链路尚未接通，中期暂返回占位提示
+        return R.error("交易闭环（购物车结算下单）功能正在开发中，预计第二阶段联调完成");
     }
 
 
@@ -485,50 +364,8 @@ private CartService cartService;
     @RequestMapping("/refund")
     public R refund(Integer id, HttpServletRequest request){
         logger.debug("refund方法:,,Controller:{},,id:{}",this.getClass().getName(),id);
-        String role = String.valueOf(request.getSession().getAttribute("role"));
-
-            TushuOrderEntity tushuOrder = tushuOrderService.selectById(id);
-            Integer buyNumber = tushuOrder.getBuyNumber();
-            Integer tushuOrderPaymentTypes = tushuOrder.getTushuOrderPaymentTypes();
-            Integer tushuId = tushuOrder.getTushuId();
-            if(tushuId == null)
-                return R.error(511,"查不到该图书");
-            TushuEntity tushuEntity = tushuService.selectById(tushuId);
-            if(tushuEntity == null)
-                return R.error(511,"查不到该图书");
-            Double tushuNewMoney = tushuEntity.getTushuNewMoney();
-            if(tushuNewMoney == null)
-                return R.error(511,"图书价格不能为空");
-
-            Integer userId = (Integer) request.getSession().getAttribute("userId");
-            YonghuEntity yonghuEntity = yonghuService.selectById(userId);
-            if(yonghuEntity == null)
-                return R.error(511,"用户不能为空");
-            if(yonghuEntity.getNewMoney() == null)
-                return R.error(511,"用户金额不能为空");
-
-            Double zhekou = 1.0;
-
-
-            //判断是什么支付方式 1代表余额 2代表积分
-            if(tushuOrderPaymentTypes == 1){//余额支付
-                //计算金额
-                Double money = tushuEntity.getTushuNewMoney() * buyNumber  * zhekou;
-                //计算所获得积分
-                Double buyJifen = 0.0;
-
-
-            }
-
-            tushuEntity.setTushuKucunNumber(tushuEntity.getTushuKucunNumber() + buyNumber);
-
-
-
-            tushuOrder.setTushuOrderTypes(2);//设置订单状态为退款
-            tushuOrderService.updateById(tushuOrder);//根据id更新
-            yonghuService.updateById(yonghuEntity);//更新用户信息
-            tushuService.updateById(tushuEntity);//更新订单中图书的信息
-            return R.ok();
+        // TODO 第二阶段联调：退款（库存回滚、余额退回、订单状态流转）逻辑尚未接通，中期暂返回占位提示
+        return R.error("退款功能正在开发中，预计第二阶段联调完成");
     }
 
 
@@ -537,17 +374,9 @@ private CartService cartService;
      */
     @RequestMapping("/deliver")
     public R deliver(Integer id ,String tushuOrderCourierNumber, String tushuOrderCourierName){
-        logger.debug("refund:,,Controller:{},,ids:{}",this.getClass().getName(),id.toString());
-        TushuOrderEntity  tushuOrderEntity = new  TushuOrderEntity();;
-        tushuOrderEntity.setId(id);
-        tushuOrderEntity.setTushuOrderTypes(4);
-        tushuOrderEntity.setTushuOrderCourierNumber(tushuOrderCourierNumber);
-        tushuOrderEntity.setTushuOrderCourierName(tushuOrderCourierName);
-        boolean b =  tushuOrderService.updateById( tushuOrderEntity);
-        if(!b){
-            return R.error("发货出错");
-        }
-        return R.ok();
+        logger.debug("deliver:,,Controller:{},,id:{}",this.getClass().getName(),id);
+        // TODO 第二阶段联调：管理员发货（录入快递信息、订单状态流转为已发货）逻辑尚未接通，中期暂返回占位提示
+        return R.error("发货功能正在开发中，预计第二阶段联调完成");
     }
 
 
@@ -563,15 +392,9 @@ private CartService cartService;
      */
     @RequestMapping("/receiving")
     public R receiving(Integer id){
-        logger.debug("refund:,,Controller:{},,ids:{}",this.getClass().getName(),id.toString());
-        TushuOrderEntity  tushuOrderEntity = new  TushuOrderEntity();
-        tushuOrderEntity.setId(id);
-        tushuOrderEntity.setTushuOrderTypes(5);
-        boolean b =  tushuOrderService.updateById( tushuOrderEntity);
-        if(!b){
-            return R.error("收货出错");
-        }
-        return R.ok();
+        logger.debug("receiving:,,Controller:{},,id:{}",this.getClass().getName(),id);
+        // TODO 第二阶段联调：用户确认收货（订单状态流转为已完成）逻辑尚未接通，中期暂返回占位提示
+        return R.error("确认收货功能正在开发中，预计第二阶段联调完成");
     }
 
 
